@@ -37,15 +37,15 @@ I tried various combinations of parameters before finalizing the HOG parameters.
 Classifier
 ---
 
-I used a linear SVM classifier with default parameters. I used HOG features along with spatial intensity and channel intensity histogram features. I got test set accuracy of 99.38% with the following configuration:  
-
-colorspace:  YCrCb 
-orientations:  9 
-pixels per cell:  8 
-cells per block:  2 
-hog channel:  ALL 
-spatial size:  (32, 32) 
-histogram bins:  32
+I used a linear SVM classifier with default parameters. I used HOG features along with spatial intensity and channel intensity histogram features. 
+I got test set accuracy of 99.38% with the following configuration:  
+* colorspace:  YCrCb 
+* orientations:  9 
+* pixels per cell:  8 
+* cells per block:  2 
+* hog channel:  ALL 
+* spatial size:  (32, 32) 
+* histogram bins:  32
 
 Sliding Window Search
 ---
