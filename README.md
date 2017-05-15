@@ -82,17 +82,30 @@ The thresholded image for the above heatmap look like this:
 
 
 
-By using this technique the result of detection on some test images look like this:
+By using this technique the result of detection the image look like this:
 
 
 ![alt text][image5]
 
 
+For the video I integrated the heat map over several frames of the video, so that areas of multiple detections get "hot", while transient false positives stay "cool".
 
-For thr video I integrated the heat map over several frames of the video, so that areas of multiple detections get "hot", while transient false positives stay "cool".
+Result of my pipeline on test images :
+
+
+![alt text][image6]
 
 Discussion
 ---
+
+The initilal problem that I faced with this project was to train my SVM classifier. I had alot of parameters to tune (colorspace, orientations, pixels per cell, cells per block, hog channel, spatial size and histogram bin). After trying variour combinations I finally found the best which gave me an accuracy of 99.38% on the test set. 
+
+After training I used sliding_window and find_windows functions to detect car's in an images. I got some false posotives. Then I used just the lower part of the image to make the search. This helped alot to get rid of the false positives.
+
+I also used the heatmap to reduce the false positives. This was really helpful in the video processing. I created a vehicles class which stores last 15 windows detections. Then I use these to generate heatmap and threshold the image. This also reduced the flickering in car detection in the video.
+
+Since I used very limited data, The pipeline is likely to fail if it a car do not resemble the one in the training set. Also I have not tested this in bad lightning condition. In order to make this robust I would try to give more data to the classifier. Experiment with some other classifiers or try to use CNN. 
+
 
 Video Implementation
 ---
