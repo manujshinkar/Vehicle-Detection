@@ -38,6 +38,7 @@ Classifier
 ---
 
 I used a linear SVM classifier with default parameters. I used HOG features along with spatial intensity and channel intensity histogram features. 
+
 I got test set accuracy of 99.38% with the following configuration:  
 * colorspace:  YCrCb 
 * orientations:  9 
