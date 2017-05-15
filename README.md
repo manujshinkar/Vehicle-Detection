@@ -6,10 +6,10 @@ Introduction
 The goals / steps of this project are the following:
 
 * Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a classifier Linear SVM classifier
-* Optionally, you can also apply a color transform and append binned color features, as well as histograms of color, to your HOG feature vector. 
-* Note: for those first two steps don't forget to normalize your features and randomize a selection for training and testing.
-* Implement a sliding-window technique and use your trained classifier to search for vehicles in images.
-* Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
+* Apply a color transform and append binned color features, as well as histograms of color, to HOG feature vector. 
+* Normalize features and randomize a selection for training and testing.
+* Implement a sliding-window technique and use the trained classifier to search for vehicles in images.
+* Run the pipeline on a video stream and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
@@ -32,7 +32,7 @@ Here is an example of car and non-car class using the `RGB` color space and HOG 
 
 ![alt text][image1]
 
-I tried various combinations of parameters before finalizing the HOG parameters. I settled on my final parameters based on the accuracy from SVM classifier. My final configuation was: YCrCb colorspace, 9 orientations, 8 pixels per cell, 2 cells per block, All channels for hog.
+I tried various combinations of parameters before finalizing the HOG parameters. I settled on my final parameters based on the accuracy from SVM classifier. 
 
 Classifier
 ---
@@ -48,11 +48,48 @@ I got test set accuracy of 99.38% with the following configuration:
 * spatial size:  (32, 32) 
 * histogram bins:  32
 
+The code for this section can be found in 13th cell of vehicle_detection.ipynb
+
 Sliding Window Search
 ---
 
+The method find_cars in the cell 16 of vehicle_detection.ipynb combines HOG features extraction with sliding window search. Instead of performing feature extraction on each window individually, the HOG features are extracted for the entire image and then these features are subsampled according to the size of the window and the fed to the classifier. This saves alot of computation time. The method performs the classifier prediction on the HOG features for each window region and returns a list of rectangle objects corresponding to the windows that generated a positive prediction.
+
+The image below shows output of find_cars on one of the test images:
+
+
+![alt text][image2]
+
+
 Removing False Positives
 ---
+
+As we can see there is a false positive in the above image. I built a heat-map from these detections in order to combine overlapping detections and remove false positives. To make a heat-map, I simply added "heat" (+=1) for all pixels within windows where a positive detection is reported by the classifier. 
+
+The heatmap for the above image look like this:
+
+
+![alt text][image3]
+
+
+I thresholded that heatmap to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap. 
+
+
+The thresholded image for the above heatmap look like this:
+
+
+![alt text][image4]
+
+
+
+By using this technique the result of detection on some test images look like this:
+
+
+![alt text][image5]
+
+
+
+For thr video I integrated the heat map over several frames of the video, so that areas of multiple detections get "hot", while transient false positives stay "cool".
 
 Discussion
 ---
